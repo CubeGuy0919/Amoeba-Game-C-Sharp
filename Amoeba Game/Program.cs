@@ -1,161 +1,182 @@
-﻿namespace Amoeba_Game
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+
+namespace Amoeba_Game
 {
     internal class Program
     {
-        static string[] menuOptions = {
-            "1.) Új Game!",
-            "2.) Game Betöltése",
-            "3.) Game Mentése",
-            "4.) Tábla méret megadása",
-            "5.) X lépés",
-            "6.) O lépés",
-            "7.) Statisztika",
-        };
+        static GameEngine engine = new GameEngine();
+        static bool isGameRunning = false;
+
+        static string[] startMenu = { "1.) Új Game!", "2.) Game Betöltése", "3.) Kilépés" };
+        static string[] gameMenu = { "1.) Mentés", "2.) X lépés", "3.) O lépés", "4.) Statisztika", "5.) Főmenü" };
+
         static void Main(string[] args)
         {
             Console.Title = "Amoeba Game v1.0";
             Console.WindowHeight = 50;
             Console.WindowWidth = 150;
-            bool running = true;
             int selectedIndex = 0;
-            while (running)
+            bool isProgramRunning = true;
+
+            while (isProgramRunning)
             {
-                DrawMenuEntry("Amoeba Game", selectedIndex);
-                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-                if (keyInfo.Key == ConsoleKey.UpArrow)
+                // Choose The Selected MenuOptions List
+                string[] currentOptions = isGameRunning ? gameMenu : startMenu;
+                DrawInterface(currentOptions, selectedIndex);
+
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.UpArrow) selectedIndex = (selectedIndex == 0) ? currentOptions.Length - 1 : selectedIndex - 1;
+                else if (key.Key == ConsoleKey.DownArrow) selectedIndex = (selectedIndex == currentOptions.Length - 1) ? 0 : selectedIndex + 1;
+                else if (key.Key == ConsoleKey.Enter)
                 {
-                    selectedIndex = (selectedIndex == 0) ? menuOptions.Length - 1 : selectedIndex - 1;
-                }
-                else if (keyInfo.Key == ConsoleKey.DownArrow)
-                {
-                    selectedIndex = (selectedIndex == menuOptions.Length - 1) ? 0 : selectedIndex + 1;
-                }
-                else if (keyInfo.Key == ConsoleKey.Enter)
-                {
-                    running = ExecuteSelection(selectedIndex);
+                    if (!isGameRunning) 
+                        isProgramRunning = HandleGameStarting(selectedIndex);
+                    else HandleGameRunning(selectedIndex);
+                    selectedIndex = 0;
                 }
             }
+        }
 
-            running = true;
-            selectedIndex = 0;
-            while (running)
+        static void DrawInterface(string[] options, int selected)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("╔" + new string('═', 40) + "╗");
+            Console.WriteLine("║" + (isGameRunning ? " JÁTÉK MÓD " : " FŐMENÜ ").PadLeft(25).PadRight(40) + "║");
+            Console.WriteLine("╚" + new string('═', 40) + "╝");
+            Console.ResetColor();
+
+            if (isGameRunning) engine.GameBoard.Draw();
+
+            for (int i = 0; i < options.Length; i++)
             {
-                DrawMenuEntry("Amoeba Game", selectedIndex);
-                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-                if (keyInfo.Key == ConsoleKey.UpArrow)
+                if (i == selected) { 
+                    Console.BackgroundColor = ConsoleColor.Cyan; 
+                    Console.ForegroundColor = ConsoleColor.Black; 
+                    Console.WriteLine($"\t>  {options[i]}  <"); 
+                    Console.ResetColor(); }
+                else Console.WriteLine($"\t{options[i]}");
+            }
+        }
+
+        static bool HandleGameStarting(int selectedIndex)
+        {
+            if (selectedIndex == 0) // Create New Game
+            {
+                Console.Write("Tábla méret megadása (5-20): ");
+                if (int.TryParse(Console.ReadLine(), out int tableSize) && tableSize >= 5)
                 {
-                    selectedIndex = (selectedIndex == 0) ? menuOptions.Length - 1 : selectedIndex - 1;
+                    engine.CreateNewGame(tableSize);
+                    isGameRunning = true;
                 }
-                else if (keyInfo.Key == ConsoleKey.DownArrow)
+                else
                 {
-                    selectedIndex = (selectedIndex == menuOptions.Length - 1) ? 0 : selectedIndex + 1;
-                }
-                else if (keyInfo.Key == ConsoleKey.Enter)
-                {
-                    running = ExecuteSelection(selectedIndex);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("A tábla mérete 5-20-ig adható meg!");
+                    Console.ResetColor();
+                    DisplaySpinner("Visszalépés a menübe!");
                 }
             }
-            static void DrawMenuEntry(string title, int selectedIndex)
+            // Load Game
+            else if (selectedIndex == 1)
             {
-                //Console.Clear();
-
-                // Header
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("╔" + new string('═', 50) + "╗");
-                Console.WriteLine("║" + title.PadLeft(25 + title.Length / 2).PadRight(50) + "║");
-                Console.WriteLine("╚" + new string('═', 50) + "╝");
-                Console.ResetColor();
-
-                // Menu Items
-                for (int i = 0; i < 2; i++)
+                if (!engine.LoadGame())
                 {
-                    if (i == selectedIndex)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Cyan;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine($"\t> {menuOptions[i]} <");
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.WriteLine($"\t{menuOptions[i]}");
-                    }
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Nem található mentett álláspont!");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    DisplaySpinner("Visszalépés a menübe!");
+                    Console.ResetColor();
+                    isGameRunning = false;
                 }
-
-                Console.WriteLine(new string('-', 52));
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine("Navigáció: [Nyilak] | Kiválasztás: [Enter]");
-                Console.ResetColor();
+                //isGameRunning = engine.LoadGame();
             }
-            static void DrawMenuRunning(string title, int selectedIndex)
+            else return false;
+            return true;
+        }
+
+        private static void DisplaySpinner(string message)
+        {
+            Console.CursorVisible = false;
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.Write($"{message} ");
+            for (int i = 0; i < 5; i++)
             {
-                //Console.Clear();
-
-                // Header
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("╔" + new string('═', 50) + "╗");
-                Console.WriteLine("║" + title.PadLeft(25 + title.Length / 2).PadRight(50) + "║");
-                Console.WriteLine("╚" + new string('═', 50) + "╝");
-                Console.ResetColor();
-
-                // Menu Items
-                for (int i = 2; i < menuOptions.Length; i++)
-                {
-                    if (i == selectedIndex)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Cyan;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine($"\t> {menuOptions[i]} <");
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.WriteLine($"\t{menuOptions[i]}");
-                    }
-                }
-
-                Console.WriteLine(new string('-', 52));
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine("Navigáció: [Nyilak] | Kiválasztás: [Enter]");
-                Console.ResetColor();
+                Console.Write(i);
+                Thread.Sleep(100);
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
             }
-            static bool ExecuteSelection(int selectedIndex)
+        }
+
+        static void HandleGameRunning(int selectedIndex)
+        {
+            switch (selectedIndex)
             {
-                Console.Clear();
-                switch (selectedIndex)
+                case 0:
+                    engine.SaveGameToFile();
+                    Console.WriteLine("Mentve!");
+                    Console.ReadKey();
+                    break;
+                case 1:
+                    MovePlayer('X');
+                    Console.ReadKey();
+                    break;
+                case 2:
+                    MovePlayer('O');
+                    Console.ReadKey();
+                    break;
+                case 3:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Tábla mérete: {engine.GameBoard.Size}x{engine.GameBoard.Size}");
+                    Console.WriteLine($"Összes lépések száma: {engine.TotalMoves}");
+                    Console.ResetColor();
+                    Console.ReadKey();
+                    break;
+                default:
+                    Console.WriteLine("Nincs ilyen funkció...");
+                    Console.ReadKey();
+                    isGameRunning = false;
+                    break;
+            }
+        }
+
+        static void MovePlayer(char placeSign)
+        {
+            Console.ForegroundColor= ConsoleColor.Gray;
+            Console.WriteLine("Pl.: 1 2");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("S O".PadLeft(8));
+            Console.ResetColor();
+            Console.Write($"{placeSign} jel elhelyezése (sor oszlop) koordinátára: ");
+            string inputCoordinates = "";
+            try
+            {
+                inputCoordinates = Console.ReadLine();
+                string[] tableCoordinates = inputCoordinates.Split(' ');
+                int rowCoordinate = int.Parse(tableCoordinates[0]) - 1;
+                int columnCoordinate = int.Parse(tableCoordinates[1]) - 1;
+                if (engine.GameBoard.PlaceSign(rowCoordinate, columnCoordinate, placeSign))
                 {
-                    case 0:
-                        CreateNewGame();
+                    engine.IncrementMoves();
+                    if (engine.CheckWin(rowCoordinate, columnCoordinate, placeSign))
+                    {
+                        Console.WriteLine($"NYERTÉL {placeSign}!");
+                        isGameRunning = false;
                         Console.ReadKey();
-                        return true;
-                    case 1: 
-                        ReloadGame();
-                        Console.ReadKey();
-                        return true;
-                    case 2:
-                        SaveGame();
-                        Console.ReadKey();
-                        return true;
-                    case 3:
-                        SpecifyTableSize();
-                        Console.ReadKey();
-                        return true;
-                    case 4: 
-                        MoveWithX();
-                        Console.ReadKey();
-                        return true;
-                    case 5: 
-                        MoveWithO();
-                        Console.ReadKey();
-                        return true;
-                    case 6: 
-                        ShowStatistics();
-                        return true;
-                    default:
-                        Console.WriteLine("Nincs ilyen funkció...");
-                        Console.ReadKey();
-                        return true;
+                    }
                 }
+            }
+            catch (FormatException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Nem megfelelő formátumú koordináta megadás!");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"--> {inputCoordinates} <--");
+                Console.ResetColor();
+                DisplaySpinner("Visszalépés a menübe!");
             }
         }
     }
