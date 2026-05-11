@@ -81,18 +81,23 @@ namespace Amoeba_Game
                 }
             }
             // Load Game
-            else if (selectedIndex == 1)
+            else if (selectedIndex == 1) 
             {
-                if (!engine.LoadGame())
+                string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.txt");
+                Console.WriteLine("Elérhető mentések:");
+                for (int i = 0; i < files.Length; i++)
+                    Console.WriteLine($"{i + 1}. {Path.GetFileNameWithoutExtension(files[i])}");
+
+                Console.Write("Írd be a betöltendő fájl nevét: ");
+                string loadName = Console.ReadLine();
+                if (engine.LoadGame(loadName)) isGameRunning = true;
+                else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Nem található mentett álláspont!");
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    DisplaySpinner("Visszalépés a menübe!");
+                    Console.WriteLine("Sikertelen betöltés!");
                     Console.ResetColor();
-                    isGameRunning = false;
+                    Console.ReadKey();
                 }
-                //isGameRunning = engine.LoadGame();
             }
             else return false;
             return true;
@@ -115,9 +120,11 @@ namespace Amoeba_Game
         {
             switch (selectedIndex)
             {
-                case 0:
-                    engine.SaveGameToFile();
-                    Console.WriteLine("Mentve!");
+                case 0: 
+                    Console.Write("Add meg a mentés nevét (pl. slot1): ");
+                    string saveName = Console.ReadLine();
+                    engine.SaveGameToFile(saveName);
+                    Console.WriteLine("Játék sikeresen mentve!");
                     Console.ReadKey();
                     break;
                 case 1:
@@ -128,11 +135,19 @@ namespace Amoeba_Game
                     MovePlayer('O');
                     Console.ReadKey();
                     break;
-                case 3:
+                case 3: 
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    Console.WriteLine($"\t--- STATISZTIKÁK ---");
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Tábla mérete: {engine.GameBoard.Size}x{engine.GameBoard.Size}");
-                    Console.WriteLine($"Összes lépések száma: {engine.TotalMoves}");
+                    Console.WriteLine($"\tX győzelmek: {engine.XWins}");
+                    Console.WriteLine($"\tO győzelmek: {engine.OWins}");
+                    Console.WriteLine($"\tAktuális tábla: {engine.GameBoard.Size}x{engine.GameBoard.Size}");
+                    Console.WriteLine($"\tAktuális lépésszám: {engine.TotalMoves}");
                     Console.ResetColor();
+                    Console.ReadKey();
+                    break;
+                case 4:
+                    DisplaySpinner("Visszalépés a főmenübe!");
                     Console.ReadKey();
                     break;
                 default:

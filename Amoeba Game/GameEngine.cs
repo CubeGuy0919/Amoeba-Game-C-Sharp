@@ -9,6 +9,40 @@ namespace Amoeba_Game
         //public string[] WinRates { get; private set; }
         private string savePath = "amoebaGame_datas_save.txt";
 
+        private string statsPath = "amoeba_stats.txt";
+        public int XWins { get; private set; }
+        public int OWins { get; private set; }
+
+        public GameEngine()
+        {
+            LoadStats();
+        }
+
+        private void LoadStats()
+        {
+            if (File.Exists(statsPath))
+            {
+                string[] lines = File.ReadAllLines(statsPath);
+                if (lines.Length >= 2)
+                {
+                    XWins = int.Parse(lines[0]);
+                    OWins = int.Parse(lines[1]);
+                }
+            }
+        }
+
+        public void RecordWin(char winner)
+        {
+            if (winner == 'X') XWins++;
+            else if (winner == 'O') OWins++;
+
+            File.WriteAllLines(statsPath, new string[] 
+            { 
+                XWins.ToString(), 
+                OWins.ToString() 
+            });
+        }
+
         public void CreateNewGame(int size)
         {
             GameBoard = new Board(size);
@@ -52,7 +86,29 @@ namespace Amoeba_Game
 
         public void IncrementMoves() => TotalMoves++;
 
-        public void SaveGameToFile()
+        //public void SaveGameToFile()
+        //{
+        //    if (GameBoard == null) return;
+        //    List<string> saveFileDatas = new List<string> 
+        //    { 
+        //        GameBoard.Size.ToString(), 
+        //        TotalMoves.ToString() 
+        //    };
+        //    for (int i = 0; i < GameBoard.Size; i++)
+        //    {
+        //        Console.WriteLine(i);
+        //        string row = "";
+        //        for (int j = 0; j < GameBoard.Size; j++)
+        //        {
+        //            row += GameBoard.Matrix[i, j];
+        //            Console.WriteLine(row);
+        //        }
+        //        saveFileDatas.Add(row);
+        //    }
+        //    File.WriteAllLines(savePath, saveFileDatas);
+        //}
+
+        public void SaveGameToFile(string fileName)
         {
             if (GameBoard == null) return;
             List<string> saveFileDatas = new List<string> 
@@ -62,22 +118,19 @@ namespace Amoeba_Game
             };
             for (int i = 0; i < GameBoard.Size; i++)
             {
-                Console.WriteLine(i);
                 string row = "";
-                for (int j = 0; j < GameBoard.Size; j++)
-                {
-                    row += GameBoard.Matrix[i, j];
-                    Console.WriteLine(row);
-                }
+                for (int j = 0; j < GameBoard.Size; j++) row += GameBoard.Matrix[i, j];
                 saveFileDatas.Add(row);
             }
-            File.WriteAllLines(savePath, saveFileDatas);
+            File.WriteAllLines(fileName + ".txt", saveFileDatas);
         }
 
-        public bool LoadGame()
+        public bool LoadGame(string fileName)
         {
-            if (!File.Exists(savePath)) return false;
-            string[] loadedGameLines = File.ReadAllLines(savePath);
+            string filePath = fileName + ".txt";
+            if (!File.Exists(filePath)) return false;
+
+            string[] loadedGameLines = File.ReadAllLines(filePath);
             int tableSize = int.Parse(loadedGameLines[0]);
             TotalMoves = int.Parse(loadedGameLines[1]);
             GameBoard = new Board(tableSize);
