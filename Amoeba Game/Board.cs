@@ -19,21 +19,22 @@ namespace Amoeba_Game
         {
             Console.Write("\t" + new string(' ', 3));
             // Horizontal (ROW) Label
-            for (int i = 1; i <= Size; i++) 
-            { 
+            for (int i = 1; i <= Size; i++)
+            {
                 Console.Write(i.ToString().PadRight(2));
             }
             Console.WriteLine("\n\t" + new string('-', Size * 2 + 3));
 
             // Vertical (COLUMN) Label
-            for (int rowIndex = 0; rowIndex < Size; rowIndex++)
+            for (int rowIndex = 1; rowIndex <= Size; rowIndex++)
             {
                 Console.Write("\t" + rowIndex.ToString().PadRight(2) + "|");
+                rowIndex--;
                 for (int columnIndex = 0; columnIndex < Size; columnIndex++)
                 {
                     if (Matrix[rowIndex, columnIndex] == 'X')
                     {
-                        Console.ForegroundColor = ConsoleColor.Red; 
+                        Console.ForegroundColor = ConsoleColor.Red;
                     }
                     else if (Matrix[rowIndex, columnIndex] == 'O')
                     {
@@ -42,6 +43,7 @@ namespace Amoeba_Game
                     Console.Write(Matrix[rowIndex, columnIndex] + " ");
                     Console.ResetColor();
                 }
+                rowIndex++;
                 Console.WriteLine("\n");
             }
         }

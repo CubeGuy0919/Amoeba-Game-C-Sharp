@@ -7,9 +7,9 @@ namespace Amoeba_Game
         public Board GameBoard { get; set; }
         public int TotalMoves { get; private set; }
         //public string[] WinRates { get; private set; }
-        private string savePath = "amoebaGame_datas_save.txt";
+        //private string savePath = "amoebaGame_datas_save.txt";
 
-        private string statsPath = "amoeba_stats.txt";
+        private string winnerStatsPath = "amoeba_stats.txt";
         public int XWins { get; private set; }
         public int OWins { get; private set; }
 
@@ -20,9 +20,9 @@ namespace Amoeba_Game
 
         private void LoadStats()
         {
-            if (File.Exists(statsPath))
+            if (File.Exists(winnerStatsPath))
             {
-                string[] lines = File.ReadAllLines(statsPath);
+                string[] lines = File.ReadAllLines(winnerStatsPath);
                 if (lines.Length >= 2)
                 {
                     XWins = int.Parse(lines[0]);
@@ -36,7 +36,7 @@ namespace Amoeba_Game
             if (winner == 'X') XWins++;
             else if (winner == 'O') OWins++;
 
-            File.WriteAllLines(statsPath, new string[] 
+            File.WriteAllLines(winnerStatsPath, new string[] 
             { 
                 XWins.ToString(), 
                 OWins.ToString() 

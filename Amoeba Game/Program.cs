@@ -32,7 +32,7 @@ namespace Amoeba_Game
                 else if (key.Key == ConsoleKey.DownArrow) selectedIndex = (selectedIndex == currentOptions.Length - 1) ? 0 : selectedIndex + 1;
                 else if (key.Key == ConsoleKey.Enter)
                 {
-                    if (!isGameRunning) 
+                    if (!isGameRunning)
                         isProgramRunning = HandleGameStarting(selectedIndex);
                     else HandleGameRunning(selectedIndex);
                     selectedIndex = 0;
@@ -53,20 +53,24 @@ namespace Amoeba_Game
 
             for (int i = 0; i < options.Length; i++)
             {
-                if (i == selected) { 
-                    Console.BackgroundColor = ConsoleColor.Cyan; 
-                    Console.ForegroundColor = ConsoleColor.Black; 
-                    Console.WriteLine($"\t>  {options[i]}  <"); 
-                    Console.ResetColor(); }
+                if (i == selected)
+                {
+                    Console.BackgroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine($"\t>  {options[i]}  <");
+                    Console.ResetColor();
+                }
                 else Console.WriteLine($"\t{options[i]}");
             }
         }
 
         static bool HandleGameStarting(int selectedIndex)
         {
-            if (selectedIndex == 0) // Create New Game
+            // Create New Game
+            if (selectedIndex == 0) 
             {
-                Console.Write("Tábla méret megadása (5-20): ");
+                Console.Write(" Tábla méret megadása (5-20): ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 if (int.TryParse(Console.ReadLine(), out int tableSize) && tableSize >= 5)
                 {
                     engine.CreateNewGame(tableSize);
@@ -75,26 +79,38 @@ namespace Amoeba_Game
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("A tábla mérete 5-20-ig adható meg!");
+                    Console.WriteLine(" A tábla mérete 5-20-ig adható meg!");
                     Console.ResetColor();
                     DisplaySpinner("Visszalépés a menübe!");
                 }
             }
             // Load Game
-            else if (selectedIndex == 1) 
+            else if (selectedIndex == 1)
             {
                 string[] files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.txt");
-                Console.WriteLine("Elérhető mentések:");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(" Elérhető mentések:");
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 for (int i = 0; i < files.Length; i++)
-                    Console.WriteLine($"{i + 1}. {Path.GetFileNameWithoutExtension(files[i])}");
-
-                Console.Write("Írd be a betöltendő fájl nevét: ");
+                {
+                    Console.WriteLine($"\t{i + 1}. {Path.GetFileNameWithoutExtension(files[i])}");
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(" Írd be a betöltendő fájl nevét: ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 string loadName = Console.ReadLine();
-                if (engine.LoadGame(loadName)) isGameRunning = true;
+                if (engine.LoadGame(loadName))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(" Sikeres betöltés!");
+                    Console.ResetColor();
+                    Console.ReadKey();
+                    isGameRunning = true;
+                }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Sikertelen betöltés!");
+                    Console.WriteLine(" Sikertelen betöltés!");
                     Console.ResetColor();
                     Console.ReadKey();
                 }
@@ -110,7 +126,7 @@ namespace Amoeba_Game
             Console.Write($"{message} ");
             for (int i = 0; i < 5; i++)
             {
-                Console.Write(i);
+                Console.Write(i + " ");
                 Thread.Sleep(100);
                 Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
             }
@@ -120,11 +136,14 @@ namespace Amoeba_Game
         {
             switch (selectedIndex)
             {
-                case 0: 
-                    Console.Write("Add meg a mentés nevét (pl. slot1): ");
+                case 0:
+                    Console.Write(" Add meg a mentés nevét (pl. slot1): ");
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
                     string saveName = Console.ReadLine();
                     engine.SaveGameToFile(saveName);
-                    Console.WriteLine("Játék sikeresen mentve!");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(" Játék sikeresen mentve!");
+                    Console.ResetColor();
                     Console.ReadKey();
                     break;
                 case 1:
@@ -135,9 +154,12 @@ namespace Amoeba_Game
                     MovePlayer('O');
                     Console.ReadKey();
                     break;
-                case 3: 
+                case 3:
                     Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine($"\t--- STATISZTIKÁK ---");
+                    Console.WriteLine("╔" + new string('═', 40) + "╗");
+                    Console.WriteLine("║" + ("STATISZTIKÁK").PadLeft(25).PadRight(40) + "║");
+                    Console.WriteLine("╚" + new string('═', 40) + "╝");
+                    Console.ResetColor();
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"\tX győzelmek: {engine.XWins}");
                     Console.WriteLine($"\tO győzelmek: {engine.OWins}");
@@ -148,10 +170,11 @@ namespace Amoeba_Game
                     break;
                 case 4:
                     DisplaySpinner("Visszalépés a főmenübe!");
+                    isGameRunning = false;
                     Console.ReadKey();
                     break;
                 default:
-                    Console.WriteLine("Nincs ilyen funkció...");
+                    Console.WriteLine(" Nincs ilyen funkció...");
                     Console.ReadKey();
                     isGameRunning = false;
                     break;
@@ -160,16 +183,18 @@ namespace Amoeba_Game
 
         static void MovePlayer(char placeSign)
         {
-            Console.ForegroundColor= ConsoleColor.Gray;
-            Console.WriteLine("Pl.: 1 2");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine(" Pl.: 1 2");
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("S O".PadLeft(8));
             Console.ResetColor();
-            Console.Write($"{placeSign} jel elhelyezése (sor oszlop) koordinátára: ");
+            Console.Write($" {placeSign} jel elhelyezése (sor oszlop) koordinátára: ");
             string inputCoordinates = "";
             try
             {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 inputCoordinates = Console.ReadLine();
+                Console.ResetColor();
                 string[] tableCoordinates = inputCoordinates.Split(' ');
                 int rowCoordinate = int.Parse(tableCoordinates[0]) - 1;
                 int columnCoordinate = int.Parse(tableCoordinates[1]) - 1;
@@ -178,7 +203,11 @@ namespace Amoeba_Game
                     engine.IncrementMoves();
                     if (engine.CheckWin(rowCoordinate, columnCoordinate, placeSign))
                     {
-                        Console.WriteLine($"NYERTÉL {placeSign}!");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write($" NYERTÉL: ");
+                        Console.ForegroundColor = placeSign == 'X' ? ConsoleColor.Red : ConsoleColor.Yellow;
+                        Console.Write(placeSign + "!");
+                        engine.RecordWin(placeSign);
                         isGameRunning = false;
                         Console.ReadKey();
                     }
@@ -187,9 +216,9 @@ namespace Amoeba_Game
             catch (FormatException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Nem megfelelő formátumú koordináta megadás!");
+                Console.WriteLine(" Nem megfelelő formátumú koordináta megadás!");
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"--> {inputCoordinates} <--");
+                Console.WriteLine($" --> {inputCoordinates} <--");
                 Console.ResetColor();
                 DisplaySpinner("Visszalépés a menübe!");
             }
