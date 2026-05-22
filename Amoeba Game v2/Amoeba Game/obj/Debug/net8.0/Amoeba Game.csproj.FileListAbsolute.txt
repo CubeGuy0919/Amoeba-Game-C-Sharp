@@ -1,0 +1,30 @@
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\bin\Debug\net8.0\Amoeba Game.exe
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\bin\Debug\net8.0\Amoeba Game.deps.json
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\bin\Debug\net8.0\Amoeba Game.runtimeconfig.json
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\bin\Debug\net8.0\Amoeba Game.dll
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\bin\Debug\net8.0\Amoeba Game.pdb
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\Amoeba Game.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\Amoeba Game.AssemblyInfoInputs.cache
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\Amoeba Game.AssemblyInfo.cs
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\Amoeba Game.csproj.CoreCompileInputs.cache
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\Amoeba Game.dll
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\refint\Amoeba Game.dll
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\Amoeba Game.pdb
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\Amoeba Game.genruntimeconfig.cache
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\ref\Amoeba Game.dll
+C:\Users\Dani\source\repos\Amoeba Game\Amoeba Game\obj\Debug\net8.0\Amoeba Game.sourcelink.json
+E:\C# Projects\Amoeba Game v2\Amoeba Game\bin\Debug\net8.0\Amoeba Game.exe
+E:\C# Projects\Amoeba Game v2\Amoeba Game\bin\Debug\net8.0\Amoeba Game.deps.json
+E:\C# Projects\Amoeba Game v2\Amoeba Game\bin\Debug\net8.0\Amoeba Game.runtimeconfig.json
+E:\C# Projects\Amoeba Game v2\Amoeba Game\bin\Debug\net8.0\Amoeba Game.dll
+E:\C# Projects\Amoeba Game v2\Amoeba Game\bin\Debug\net8.0\Amoeba Game.pdb
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\Amoeba Game.GeneratedMSBuildEditorConfig.editorconfig
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\Amoeba Game.AssemblyInfoInputs.cache
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\Amoeba Game.AssemblyInfo.cs
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\Amoeba Game.csproj.CoreCompileInputs.cache
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\Amoeba Game.sourcelink.json
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\Amoeba Game.dll
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\refint\Amoeba Game.dll
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\Amoeba Game.pdb
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\Amoeba Game.genruntimeconfig.cache
+E:\C# Projects\Amoeba Game v2\Amoeba Game\obj\Debug\net8.0\ref\Amoeba Game.dll
